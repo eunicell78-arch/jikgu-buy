@@ -232,16 +232,22 @@
   <!-- 4. 네이버 스토어 판매가 -->
   <section class="card">
     <p class="eyebrow">네이버 스토어 판매가</p>
-    <label class="field">네이버 판매가 (원) <span class="sub">— 권장가 참고해 직접 입력</span>
-      <input id="naverSell" class="num" type="number" inputmode="numeric" placeholder="예: 19900" />
+
+    <label class="field">단품가 (원) <span class="sub">— 1개 판매가</span>
+      <input id="unitSell" class="num" type="number" inputmode="numeric" placeholder="예: 19900" />
     </label>
     <div class="margin-box">
-      <div class="mrow"><span>이 가격의 마진 (개당)</span><span class="mv" id="naverProfit">0원</span></div>
-      <div class="mrow"><span>마진율</span><span class="mv" id="naverRate">0%</span></div>
+      <div class="mrow"><span>단품 마진 (개당)</span><span class="mv" id="unitProfit">0원</span></div>
+      <div class="mrow"><span>마진율</span><span class="mv" id="unitRate">0%</span></div>
     </div>
-    <label class="field" style="margin-top:11px;">블로그 판매가 (원)
-      <input id="blogSell" class="num" type="number" inputmode="numeric" placeholder="(선택)" />
+
+    <label class="field" style="margin-top:13px;">세트가 (원) <span class="sub" id="setHint">— 세트 전체 판매가</span>
+      <input id="setSell" class="num" type="number" inputmode="numeric" placeholder="예: 75000" />
     </label>
+    <div class="margin-box">
+      <div class="mrow"><span id="setCostLabel">세트 마진</span><span class="mv" id="setProfit">0원</span></div>
+      <div class="mrow"><span>마진율</span><span class="mv" id="setRate">0%</span></div>
+    </div>
   </section>
 
   <!-- 5. 저장 -->
@@ -349,22 +355,29 @@
     $("bdCost").textContent = won(r.totalCost)+"원";
     $("bdBuy").textContent = won(r.buyCost)+"원";
 
-    // 네이버 판매가 → 마진 역산 (개당 총원가 기준)
-    const naverSell = numv("naverSell");
-    const X = r.totalCost;
-    if(naverSell>0 && X>0){
-      const mProfit = naverSell - X;
-      const mRate = mProfit / X * 100;
-      $("naverProfit").textContent = won(mProfit)+"원";
-      $("naverRate").textContent = (mRate>=0?"+":"") + mRate.toFixed(1) + "%";
-      $("naverProfit").classList.toggle("loss", mProfit<0);
-      $("naverRate").classList.toggle("loss", mProfit<0);
-    } else {
-      $("naverProfit").textContent = "0원";
-      $("naverRate").textContent = "0%";
-      $("naverProfit").classList.remove("loss");
-      $("naverRate").classList.remove("loss");
+    // 네이버 판매가 → 마진 역산 (단품 / 세트)
+    const X = r.totalCost;       // 개당 총원가
+    const setQty = r.qty || 1;   // 세트 구성 수량
+    function showMargin(sellId, costBase, profitId, rateId){
+      const sell = numv(sellId);
+      if(sell>0 && costBase>0){
+        const p = sell - costBase;
+        const rt = p / costBase * 100;
+        $(profitId).textContent = won(p)+"원";
+        $(rateId).textContent = (rt>=0?"+":"") + rt.toFixed(1) + "%";
+        $(profitId).classList.toggle("loss", p<0);
+        $(rateId).classList.toggle("loss", p<0);
+      } else {
+        $(profitId).textContent = "0원";
+        $(rateId).textContent = "0%";
+        $(profitId).classList.remove("loss");
+        $(rateId).classList.remove("loss");
+      }
     }
+    showMargin("unitSell", X, "unitProfit", "unitRate");        // 단품: 개당 원가 기준
+    showMargin("setSell", X*setQty, "setProfit", "setRate");    // 세트: 개당원가 × 수량
+    $("setHint").textContent = `— ${setQty}개 묶음 판매가`;
+    $("setCostLabel").textContent = `세트 마진 (원가 ${won(X*setQty)}원)`;
   }
 
   // 모든 입력에 실시간 계산 연결
@@ -387,18 +400,18 @@
       "주문사이트": $("site").value.trim(),
       "배송방식": shipMode,
       "통화": r.cur,
+      "판매타입": "네이버스토어",
       "구매가(외화)": r.price,
+      "구매가(원화)": Math.round(r.itemKrw),
       "환율": r.rate,
       "수량": r.qty,
       "개당운임": Math.round(r.shipUnit),
-      "제품단가(원화)": Math.round(r.itemKrw),
       "판매총원가": Math.round(r.totalCost),
       "마진율": r.margin,
       "권장판매가": Math.round(r.sell),
       "개당순이익": Math.round(r.profitUnit),
-      "총이익": Math.round(r.profitTotal),
-      "네이버단가": parseFloat($("naverSell").value)||0,
-      "블로그단가": parseFloat($("blogSell").value)||0,
+      "네이버단가": parseFloat($("unitSell").value)||0,
+      "네이버세트가": parseFloat($("setSell").value)||0,
       "메모": $("memo").value.trim(),
       "저장일": new Date().toISOString().slice(0,10)
     };
@@ -437,7 +450,7 @@
     $("shipFee").value=""; $("shipWeight").value=""; $("shipUnit").value="";
     $("tax").value="0"; $("pack").value="0"; $("fee").value="5"; $("margin").value="30";
     $("memo").value="";
-    $("naverSell").value=""; $("blogSell").value="";
+    $("unitSell").value=""; $("setSell").value="";
     // 배송방식 직배로 복귀
     shipMode="직배";
     document.querySelectorAll("#shipToggle button").forEach(b=> b.classList.toggle("on", b.dataset.mode==="직배"));
