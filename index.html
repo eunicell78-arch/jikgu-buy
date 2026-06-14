@@ -37,6 +37,19 @@
   .reset-btn{font:inherit; font-size:12.5px; font-weight:700; color:var(--olive-deep); background:var(--olive-tint); border:0; border-radius:8px; padding:7px 13px; cursor:pointer;}
   .reset-btn:active{background:#dfe9df;}
 
+  /* 모드 전환 탭 */
+  .mode-tabs{display:flex; gap:6px; margin-bottom:12px;}
+  .mode-tab{flex:1; font:inherit; font-size:12.5px; font-weight:700; padding:10px 6px; border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink-soft); cursor:pointer;}
+  .mode-tab.on{background:var(--olive); color:#fff; border-color:var(--olive);}
+
+  /* 여러 제품 묶음 */
+  .prod-head{display:grid; grid-template-columns:1fr 76px 46px 28px; gap:6px; font-size:11px; color:var(--ink-soft); font-weight:600; margin-bottom:6px; padding:0 2px;}
+  .prod-row{display:grid; grid-template-columns:1fr 76px 46px 28px; gap:6px; align-items:center;}
+  .prod-row input{padding:8px 8px; font-size:13px;}
+  .prod-del{font:inherit; border:0; background:transparent; color:var(--loss); font-size:20px; line-height:1; cursor:pointer; padding:0;}
+  .prod-cost{font-size:11.5px; color:var(--olive-deep); font-weight:700; text-align:right; padding:3px 2px 9px; font-feature-settings:"tnum";}
+  .add-row{width:100%; font:inherit; font-size:13px; font-weight:700; color:var(--olive-deep); background:var(--olive-tint); border:0; border-radius:9px; padding:9px; cursor:pointer; margin-top:4px;}
+
   .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:13px 14px; margin-bottom:10px;}
   .card > .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--olive); margin:0 0 9px;}
 
@@ -122,6 +135,12 @@
     <button type="button" class="reset-btn" id="resetBtn">↻ 초기화</button>
   </header>
 
+  <div class="mode-tabs">
+    <button type="button" class="mode-tab on" id="tabSingle">단일 제품 (판매용)</button>
+    <button type="button" class="mode-tab" id="tabMulti">여러 제품 · 개인직구</button>
+  </div>
+
+  <div id="modeSingle">
   <!-- 1. 상품 / 구매 -->
   <section class="card">
     <p class="eyebrow">상품 · 구매</p>
@@ -263,6 +282,72 @@
     <p class="msg" id="saveMsg"></p>
     <p class="note">‘노션에 저장’은 배포(GitHub + Netlify)와 노션 비밀키 연결을 끝낸 뒤부터 작동해요. 지금은 계산 결과를 확인하는 단계예요.</p>
   </section>
+  </div><!-- /modeSingle -->
+
+  <div id="modeMulti" class="hide">
+    <!-- 주문 공통 -->
+    <section class="card">
+      <p class="eyebrow">주문 공통</p>
+      <div class="grid two">
+        <label class="field">통화
+          <select id="mCurrency">
+            <option value="EUR">EUR</option>
+            <option value="USD">USD</option>
+            <option value="JPY">JPY</option>
+            <option value="GBP">GBP</option>
+            <option value="KRW">KRW</option>
+          </select>
+        </label>
+        <label class="field">환율
+          <input id="mRate" type="number" inputmode="decimal" />
+        </label>
+      </div>
+      <div class="toggle" id="mShipToggle" style="margin-top:9px;">
+        <button type="button" data-mode="직배" class="on">직배 (외화 운임)</button>
+        <button type="button" data-mode="배대지">배대지 (원화 운임)</button>
+      </div>
+      <label class="field" style="margin-top:9px;"><span id="mShipLabel">총 운임 (외화)</span> <span class="sub">— 주문 전체에 낸 운임</span>
+        <input id="mShip" type="number" inputmode="decimal" placeholder="예: 30.74" />
+      </label>
+      <div class="grid two" style="margin-top:9px;">
+        <label class="field">국가
+          <input id="mCountry" type="text" placeholder="그리스" />
+        </label>
+        <label class="field">주문사이트
+          <input id="mSite" type="text" placeholder="사이트명" />
+        </label>
+      </div>
+    </section>
+
+    <!-- 제품 목록 -->
+    <section class="card">
+      <p class="eyebrow">제품 목록</p>
+      <div class="prod-head"><span>제품명</span><span>구매가</span><span>수량</span><span></span></div>
+      <div id="prodList"></div>
+      <button type="button" class="add-row" id="addProd">＋ 제품 추가</button>
+    </section>
+
+    <!-- 결과 요약 -->
+    <section class="card result">
+      <p class="eyebrow">개인직구 원가 (운임 금액비례 배분)</p>
+      <div class="breakdown" style="grid-template-columns:1fr;">
+        <div class="row"><span>제품 합계 (외화)</span><span id="mSubtotal">0</span></div>
+        <div class="row"><span>총 운임 (외화)</span><span id="mShipShow">0</span></div>
+        <div class="row"><span>총 구입원가 (원화)</span><span id="mTotalKrw">0원</span></div>
+      </div>
+    </section>
+
+    <!-- 저장 -->
+    <section class="card">
+      <p class="eyebrow">저장</p>
+      <div class="actions">
+        <button type="button" class="btn primary" id="mSaveBtn">제품별로 노션에 저장</button>
+        <a class="btn ghost" href="https://app.notion.com/p/0383dcc18a53460e9fd306c5afbc02d1" target="_blank" rel="noopener">노션에서 목록 보기</a>
+      </div>
+      <p class="msg" id="mSaveMsg"></p>
+      <p class="note">운임을 금액 비례로 나눠, 제품마다 노션 📦 개인 직구에 한 줄씩 저장해요.</p>
+    </section>
+  </div><!-- /modeMulti -->
 
   <footer>AI유니스 · 바이브코딩 · 2026</footer>
 </div>
@@ -476,8 +561,149 @@
     window.scrollTo({top:0, behavior:"smooth"});
   });
 
+  // ===== 여러 제품 · 개인직구 모드 =====
+  let mShipMode = "직배";
+  $("tabSingle").addEventListener("click", ()=>{
+    $("tabSingle").classList.add("on"); $("tabMulti").classList.remove("on");
+    $("modeSingle").classList.remove("hide"); $("modeMulti").classList.add("hide");
+  });
+  $("tabMulti").addEventListener("click", ()=>{
+    $("tabMulti").classList.add("on"); $("tabSingle").classList.remove("on");
+    $("modeMulti").classList.remove("hide"); $("modeSingle").classList.add("hide");
+    if($("prodList").children.length===0) addProdRow();
+  });
+
+  // 통화 바꾸면 환율 자동 채움
+  $("mCurrency").addEventListener("change", ()=>{
+    $("mRate").value = DEFAULT_RATE[$("mCurrency").value] || "";
+    calcMulti();
+  });
+
+  // 직배 / 배대지 토글
+  document.querySelectorAll("#mShipToggle button").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      mShipMode = b.dataset.mode;
+      document.querySelectorAll("#mShipToggle button").forEach(x=> x.classList.toggle("on", x===b));
+      $("mShipLabel").textContent = mShipMode==="배대지" ? "총 운임 (원화)" : "총 운임 (외화)";
+      $("mShip").placeholder = mShipMode==="배대지" ? "예: 35000" : "예: 30.74";
+      calcMulti();
+    });
+  });
+
+  // 제품 행 추가
+  function addProdRow(){
+    const item = document.createElement("div");
+    item.className = "prod-item";
+    item.innerHTML =
+      '<div class="prod-row">' +
+        '<input class="p-name" type="text" placeholder="제품명" />' +
+        '<input class="p-price" type="number" inputmode="decimal" placeholder="구매가" />' +
+        '<input class="p-qty" type="number" inputmode="numeric" placeholder="1" value="1" />' +
+        '<button type="button" class="prod-del" title="삭제">×</button>' +
+      '</div>' +
+      '<div class="prod-cost">개당 원가 —</div>';
+    $("prodList").appendChild(item);
+    item.querySelector(".prod-del").addEventListener("click", ()=>{ item.remove(); calcMulti(); });
+    item.querySelectorAll("input").forEach(el=> el.addEventListener("input", calcMulti));
+    calcMulti();
+  }
+  $("addProd").addEventListener("click", addProdRow);
+
+  // 금액 비례 배분 계산
+  function calcMulti(){
+    const rate = parseFloat($("mRate").value)||0;
+    const totalShip = parseFloat($("mShip").value)||0;   // 외화
+    const sym = SYMBOL[$("mCurrency").value] || "";
+    const items = [...$("prodList").querySelectorAll(".prod-item")];
+    let subtotal = 0;
+    const rows = items.map(it=>{
+      const price = parseFloat(it.querySelector(".p-price").value)||0;
+      const qty = parseFloat(it.querySelector(".p-qty").value)||0;
+      const amount = price*qty;
+      subtotal += amount;
+      return {it, price, qty, amount};
+    });
+    let totalKrw = 0;
+    rows.forEach(r=>{
+      const ratio = subtotal>0 ? r.amount/subtotal : 0;
+      const shipShareKrw = mShipMode==="배대지" ? totalShip*ratio : (totalShip*ratio)*rate;  // 배분운임(원화)
+      const shipUnitKrw = r.qty>0 ? shipShareKrw/r.qty : 0;              // 개당운임(원화)
+      const priceKrw = r.price*rate;                                     // 구매가(원화)
+      const unitCost = priceKrw + shipUnitKrw;                           // 개당 구입원가
+      const costEl = r.it.querySelector(".prod-cost");
+      if(r.price>0 && rate>0){
+        costEl.textContent = "개당 원가 " + won(unitCost) + "원 (운임 " + won(shipUnitKrw) + "원 포함)";
+      } else {
+        costEl.textContent = "개당 원가 —";
+      }
+      totalKrw += unitCost * r.qty;
+    });
+    $("mSubtotal").textContent = subtotal>0 ? sym+subtotal.toFixed(2) : "0";
+    $("mShipShow").textContent = totalShip>0 ? (mShipMode==="배대지" ? won(totalShip)+"원" : sym+totalShip.toFixed(2)) : "0";
+    $("mTotalKrw").textContent = won(totalKrw)+"원";
+  }
+
+  // 제품별로 노션에 저장 (각 제품 한 줄씩)
+  $("mSaveBtn").addEventListener("click", async ()=>{
+    const msg = $("mSaveMsg");
+    const rate = parseFloat($("mRate").value)||0;
+    const totalShip = parseFloat($("mShip").value)||0;
+    const cur = $("mCurrency").value;
+    const country = $("mCountry").value.trim();
+    const site = $("mSite").value.trim();
+    const items = [...$("prodList").querySelectorAll(".prod-item")];
+    const rows = items.map(it=>({
+      name: it.querySelector(".p-name").value.trim(),
+      price: parseFloat(it.querySelector(".p-price").value)||0,
+      qty: parseFloat(it.querySelector(".p-qty").value)||0
+    })).filter(r=> r.name && r.price>0);
+
+    if(rows.length===0){ msg.className="msg err"; msg.textContent="제품명과 구매가를 넣은 제품이 없어요."; return; }
+    if(rate<=0){ msg.className="msg err"; msg.textContent="환율을 입력해 주세요."; return; }
+
+    const subtotal = rows.reduce((s,r)=> s + r.price*r.qty, 0);
+    const today = new Date().toISOString().slice(0,10);
+
+    msg.className="msg"; msg.textContent="저장 중… (0/"+rows.length+")";
+    let ok=0, fail=0, lastErr="";
+    for(let i=0;i<rows.length;i++){
+      const r = rows[i];
+      const amount = r.price*r.qty;
+      const ratio = subtotal>0 ? amount/subtotal : 0;
+      const shipShareKrw = mShipMode==="배대지" ? totalShip*ratio : (totalShip*ratio)*rate;
+      const shipUnitKrw = r.qty>0 ? shipShareKrw/r.qty : 0;
+      const priceKrw = r.price*rate;
+      const unitCost = priceKrw + shipUnitKrw;
+      const payload = {
+        "제품명": r.name,
+        "국가": country,
+        "주문사이트": site,
+        "배송방식": mShipMode,
+        "통화": cur,
+        "구매가(외화)": r.price,
+        "구매가(원화)": Math.round(priceKrw),
+        "환율": rate,
+        "수량": r.qty,
+        "개당운임": Math.round(shipUnitKrw),
+        "구입총원가(수수료전)": Math.round(unitCost),
+        "저장일": today
+      };
+      try{
+        const res = await fetch("/.netlify/functions/save-to-notion", {
+          method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)
+        });
+        if(res.ok){ ok++; }
+        else { fail++; const rj = await res.json().catch(()=>({})); lastErr = rj.detail || rj.error || ""; }
+      }catch(e){ fail++; lastErr = String(e); }
+      msg.textContent = "저장 중… ("+(i+1)+"/"+rows.length+")";
+    }
+    if(fail===0){ msg.className="msg ok"; msg.textContent = ok+"개 제품 저장 완료 ✓"; }
+    else { msg.className="msg err"; msg.textContent = ok+"개 성공, "+fail+"개 실패. "+String(lastErr).slice(0,80); }
+  });
+
   // 초기값
   $("rate").value = DEFAULT_RATE["EUR"];
+  $("mRate").value = DEFAULT_RATE["EUR"];
   calc();
 </script>
 </body>
