@@ -29,25 +29,26 @@
     font-size:15px; line-height:1.5;
     font-feature-settings:"tnum";
   }
-  .wrap{max-width:560px; margin:0 auto; padding:20px 16px 64px;}
+  .wrap{max-width:560px; margin:0 auto; padding:0 12px 36px;}
 
-  header.top{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:18px;}
-  header.top h1{font-size:20px; font-weight:800; letter-spacing:-.02em; margin:0;}
+  header.top{position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--bg); margin:0 -12px 10px; padding:12px 12px 9px; border-bottom:1px solid var(--line);}
+  header.top h1{font-size:18px; font-weight:800; letter-spacing:-.02em; margin:0;}
   header.top h1 .dot{color:var(--olive);}
-  header.top .hint{font-size:12px; color:var(--ink-soft);}
+  .reset-btn{font:inherit; font-size:12.5px; font-weight:700; color:var(--olive-deep); background:var(--olive-tint); border:0; border-radius:8px; padding:7px 13px; cursor:pointer;}
+  .reset-btn:active{background:#dfe9df;}
 
-  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; margin-bottom:14px;}
-  .card > .eyebrow{font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--olive); margin:0 0 12px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:13px 14px; margin-bottom:10px;}
+  .card > .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--olive); margin:0 0 9px;}
 
-  .grid{display:grid; gap:12px;}
+  .grid{display:grid; gap:9px;}
   .grid.two{grid-template-columns:1fr 1fr;}
   .grid.three{grid-template-columns:1fr 1fr 1fr;}
 
-  label.field{display:flex; flex-direction:column; gap:5px; font-size:12.5px; color:var(--ink-soft); font-weight:600;}
+  label.field{display:flex; flex-direction:column; gap:4px; font-size:12px; color:var(--ink-soft); font-weight:600;}
   label.field .req{color:var(--olive);}
   input, select{
     width:100%; font:inherit; color:var(--ink);
-    padding:10px 11px; border:1px solid var(--line); border-radius:10px; background:#fff;
+    padding:8px 10px; border:1px solid var(--line); border-radius:9px; background:#fff;
     -webkit-appearance:none; appearance:none;
   }
   input:focus, select:focus{outline:2px solid var(--olive); outline-offset:0; border-color:var(--olive);}
@@ -69,26 +70,24 @@
   .result{background:var(--olive-deep); color:#fff; border:0;}
   .result .eyebrow{color:#bcd3c2;}
   .result .price-main{font-size:13px; color:#bcd3c2; font-weight:600; margin-bottom:2px;}
-  .result .price{font-size:34px; font-weight:800; letter-spacing:-.02em; line-height:1.1;}
-  .result .price .won{font-size:18px; font-weight:600; margin-left:2px; color:#cfe0d4;}
-  .result .split{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px;}
-  .result .split .box{background:rgba(255,255,255,.08); border-radius:10px; padding:11px 12px;}
-  .result .split .box .k{font-size:11.5px; color:#bcd3c2; font-weight:600;}
-  .result .split .box .v{font-size:19px; font-weight:800; margin-top:3px;}
+  .result .price{font-size:29px; font-weight:800; letter-spacing:-.02em; line-height:1.1;}
+  .result .price .won{font-size:16px; font-weight:600; margin-left:2px; color:#cfe0d4;}
+  .result .split{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;}
+  .result .split .box{background:rgba(255,255,255,.08); border-radius:9px; padding:9px 11px;}
+  .result .split .box .k{font-size:11px; color:#bcd3c2; font-weight:600;}
+  .result .split .box .v{font-size:18px; font-weight:800; margin-top:2px;}
   .result .split .box .v.loss{color:#ffb4ab;}
-  .breakdown{margin-top:14px; border-top:1px solid rgba(255,255,255,.14); padding-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;}
+  .breakdown{margin-top:11px; border-top:1px solid rgba(255,255,255,.14); padding-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:6px 14px;}
   .breakdown .row{display:flex; justify-content:space-between; font-size:12.5px;}
   .breakdown .row span:first-child{color:#bcd3c2;}
   .breakdown .row span:last-child{font-weight:700; font-feature-settings:"tnum";}
 
-  /* 채널 */
-  .chan-row2{display:grid; grid-template-columns:64px 1fr; gap:10px; align-items:center; margin-bottom:10px;}
-  .chan-row2 .name{font-size:13px; font-weight:700; color:var(--ink);}
-  .chan-row{display:grid; grid-template-columns:64px 1fr 1fr auto; gap:8px; align-items:center; margin-bottom:9px;}
-  .chan-row .name{font-size:13px; font-weight:700; color:var(--ink);}
-  .chan-row .sum{font-size:13px; font-weight:800; text-align:right; color:var(--olive-deep); min-width:74px; font-feature-settings:"tnum";}
-  .chan-row input{padding:8px 9px;}
-  .chan-head{display:grid; grid-template-columns:64px 1fr 1fr auto; gap:8px; font-size:11px; color:var(--ink-soft); font-weight:600; margin-bottom:8px;}
+  /* 네이버 판매가 마진 역산 */
+  .field .sub{font-weight:500; color:var(--ink-soft); font-size:11.5px;}
+  .margin-box{margin-top:10px; background:var(--olive-tint); border-radius:9px; padding:11px 13px; display:grid; gap:6px;}
+  .margin-box .mrow{display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--ink-soft); font-weight:600;}
+  .margin-box .mrow .mv{font-size:17px; font-weight:800; color:var(--olive-deep); font-feature-settings:"tnum";}
+  .margin-box .mrow .mv.loss{color:var(--loss);}
   .chan-head span:nth-child(2),.chan-head span:nth-child(3){text-align:center;}
   .chan-head span:nth-child(4){text-align:right; min-width:74px;}
   .chan-total{display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line); margin-top:6px; padding-top:12px;}
@@ -120,7 +119,7 @@
 
   <header class="top">
     <h1>직구 계산기<span class="dot">.</span></h1>
-    <span class="hint">원가 · 운임 · 수수료 · 마진</span>
+    <button type="button" class="reset-btn" id="resetBtn">↻ 초기화</button>
   </header>
 
   <!-- 1. 상품 / 구매 -->
@@ -230,17 +229,19 @@
     </div>
   </section>
 
-  <!-- 4. 채널별 판매가 -->
+  <!-- 4. 네이버 스토어 판매가 -->
   <section class="card">
-    <p class="eyebrow">채널별 판매가</p>
-    <div class="chan-row2">
-      <span class="name">네이버</span>
-      <input class="num chan-price" data-ch="naver" type="number" inputmode="numeric" placeholder="판매 단가 (원)" />
+    <p class="eyebrow">네이버 스토어 판매가</p>
+    <label class="field">네이버 판매가 (원) <span class="sub">— 권장가 참고해 직접 입력</span>
+      <input id="naverSell" class="num" type="number" inputmode="numeric" placeholder="예: 19900" />
+    </label>
+    <div class="margin-box">
+      <div class="mrow"><span>이 가격의 마진 (개당)</span><span class="mv" id="naverProfit">0원</span></div>
+      <div class="mrow"><span>마진율</span><span class="mv" id="naverRate">0%</span></div>
     </div>
-    <div class="chan-row2">
-      <span class="name">블로그</span>
-      <input class="num chan-price" data-ch="blog" type="number" inputmode="numeric" placeholder="판매 단가 (원)" />
-    </div>
+    <label class="field" style="margin-top:11px;">블로그 판매가 (원)
+      <input id="blogSell" class="num" type="number" inputmode="numeric" placeholder="(선택)" />
+    </label>
   </section>
 
   <!-- 5. 저장 -->
@@ -347,6 +348,23 @@
     $("bdItem").textContent = won(r.itemKrw)+"원";
     $("bdCost").textContent = won(r.totalCost)+"원";
     $("bdBuy").textContent = won(r.buyCost)+"원";
+
+    // 네이버 판매가 → 마진 역산 (개당 총원가 기준)
+    const naverSell = numv("naverSell");
+    const X = r.totalCost;
+    if(naverSell>0 && X>0){
+      const mProfit = naverSell - X;
+      const mRate = mProfit / X * 100;
+      $("naverProfit").textContent = won(mProfit)+"원";
+      $("naverRate").textContent = (mRate>=0?"+":"") + mRate.toFixed(1) + "%";
+      $("naverProfit").classList.toggle("loss", mProfit<0);
+      $("naverRate").classList.toggle("loss", mProfit<0);
+    } else {
+      $("naverProfit").textContent = "0원";
+      $("naverRate").textContent = "0%";
+      $("naverProfit").classList.remove("loss");
+      $("naverRate").classList.remove("loss");
+    }
   }
 
   // 모든 입력에 실시간 계산 연결
@@ -362,7 +380,6 @@
       return;
     }
     const r = compute();
-    const chPrice = (ch)=> parseFloat(document.querySelector(`.chan-price[data-ch="${ch}"]`).value)||0;
 
     const payload = {
       "제품명": $("name").value.trim(),
@@ -380,8 +397,8 @@
       "권장판매가": Math.round(r.sell),
       "개당순이익": Math.round(r.profitUnit),
       "총이익": Math.round(r.profitTotal),
-      "네이버단가": chPrice("naver"),
-      "블로그단가": chPrice("blog"),
+      "네이버단가": parseFloat($("naverSell").value)||0,
+      "블로그단가": parseFloat($("blogSell").value)||0,
       "메모": $("memo").value.trim(),
       "저장일": new Date().toISOString().slice(0,10)
     };
@@ -410,6 +427,25 @@
       msg.className="msg err";
       msg.textContent="함수에 연결 못 했어요 — 함수가 배포됐는지 확인하세요. (" + String(e).slice(0,60) + ")";
     }
+  });
+
+  // 초기화 버튼: 입력값을 기본값으로 되돌림
+  $("resetBtn").addEventListener("click", ()=>{
+    $("name").value=""; $("country").value=""; $("site").value="";
+    $("currency").value="EUR"; $("rate").value=DEFAULT_RATE["EUR"];
+    $("price").value=""; $("qty").value="1";
+    $("shipFee").value=""; $("shipWeight").value=""; $("shipUnit").value="";
+    $("tax").value="0"; $("pack").value="0"; $("fee").value="5"; $("margin").value="30";
+    $("memo").value="";
+    $("naverSell").value=""; $("blogSell").value="";
+    // 배송방식 직배로 복귀
+    shipMode="직배";
+    document.querySelectorAll("#shipToggle button").forEach(b=> b.classList.toggle("on", b.dataset.mode==="직배"));
+    $("directBox").classList.remove("hide");
+    $("forwardBox").classList.add("hide");
+    $("saveMsg").textContent=""; $("saveMsg").className="msg";
+    calc();
+    window.scrollTo({top:0, behavior:"smooth"});
   });
 
   // 초기값
