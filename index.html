@@ -394,6 +394,16 @@
     }
     const r = compute();
 
+    // 네이버 판매가 마진·마진율 (저장용)
+    const Xc = r.totalCost, qtyc = r.qty || 1;
+    const unitSellV = parseFloat($("unitSell").value) || 0;
+    const setSellV = parseFloat($("setSell").value) || 0;
+    const setCostc = Xc * qtyc;
+    const unitProfitV = unitSellV > 0 ? Math.round(unitSellV - Xc) : 0;
+    const unitRateV = (unitSellV > 0 && Xc > 0) ? (unitSellV - Xc) / Xc : 0;
+    const setProfitV = setSellV > 0 ? Math.round(setSellV - setCostc) : 0;
+    const setRateV = (setSellV > 0 && setCostc > 0) ? (setSellV - setCostc) / setCostc : 0;
+
     const payload = {
       "제품명": $("name").value.trim(),
       "국가": $("country").value.trim(),
@@ -410,8 +420,12 @@
       "마진율": r.margin,
       "권장판매가": Math.round(r.sell),
       "개당순이익": Math.round(r.profitUnit),
-      "네이버단가": parseFloat($("unitSell").value)||0,
-      "네이버세트가": parseFloat($("setSell").value)||0,
+      "네이버단가": unitSellV,
+      "네이버세트가": setSellV,
+      "단품마진": unitProfitV,
+      "단품마진율": unitRateV,
+      "세트마진": setProfitV,
+      "세트마진율": setRateV,
       "메모": $("memo").value.trim(),
       "저장일": new Date().toISOString().slice(0,10)
     };
