@@ -393,11 +393,22 @@
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify(payload)
       });
-      if(!res.ok) throw new Error("server");
+      const result = await res.json().catch(()=>({}));
+      if(!res.ok){
+        const d = String(result.detail || result.error || "").toLowerCase();
+        let hint = "";
+        if(d.includes("notion_token") || d.includes("환경변수")) hint = "Netlify 환경변수 NOTION_TOKEN을 확인하세요.";
+        else if(d.includes("object_not_found") || d.includes("could not find") || d.includes("not shared")) hint = "노션 통합을 DB에 '연결(Connections)' 했는지 확인하세요.";
+        else if(d.includes("unauthorized") || d.includes("api token") || d.includes("invalid")) hint = "비밀키 값이 틀렸을 수 있어요. 다시 복사해 보세요.";
+        else if(d.includes("property") || d.includes("validation")) hint = "DB 컬럼 이름이 안 맞을 수 있어요.";
+        msg.className="msg err";
+        msg.textContent = "저장 실패 — " + (hint || (result.detail || result.error || "원인 미상").toString().slice(0,140));
+        return;
+      }
       msg.className="msg ok"; msg.textContent="노션에 저장됐어요. ✓";
     }catch(e){
       msg.className="msg err";
-      msg.textContent="아직 노션 연결 전이에요. 배포 + 비밀키 설정 후 작동합니다.";
+      msg.textContent="함수에 연결 못 했어요 — 함수가 배포됐는지 확인하세요. (" + String(e).slice(0,60) + ")";
     }
   });
 
